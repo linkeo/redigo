@@ -288,6 +288,23 @@ func Ints(reply interface{}, err error) ([]int, error) {
 	return ints, nil
 }
 
+// Uint64s is a helper that converts an array command reply to a []uint64. If
+// err is not equal to nil, then Uint64s returns nil, err.
+func Uint64s(reply interface{}, err error) ([]uint64, error) {
+	var uint64s []uint64
+	if reply == nil {
+		return uint64s, ErrNil
+	}
+	values, err := Values(reply, err)
+	if err != nil {
+		return uint64s, err
+	}
+	if err := ScanSlice(values, &uint64s); err != nil {
+		return uint64s, err
+	}
+	return uint64s, nil
+}
+
 // StringMap is a helper that converts an array of strings (alternating key, value)
 // into a map[string]string. The HGETALL and CONFIG GET commands return replies in this format.
 // Requires an even number of values in result.
